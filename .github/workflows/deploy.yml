@@ -1,0 +1,33 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # Navigate to the project directory 
+            cd URL-Shortener
+
+            # Pull the latest code from GitHub
+            git pull origin main
+
+            # Rebuild and restart the Docker containers 
+            docker-compose up --build -d
+
+            # Clean up old unused Docker images to prevent the server from running out of space
+            docker image prune -f
