@@ -22,7 +22,9 @@ mongoose
   .catch((err) => console.error(err));
 
 app.get("/", (req, res) => {
-  res.send("hello world!");
+  res.send(
+    "Hello Welcome to my URL shrinker: \n Send a json post request with the link in a 'longURl' field to get a shrunk URL\n Then just send a get request with the shortened URL as a parameter to redirect to the site",
+  );
 });
 
 app.post("/shorten", async (req, res) => {
