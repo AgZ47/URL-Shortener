@@ -23,7 +23,78 @@ mongoose
 
 app.get("/", (req, res) => {
   res.send(
-    "Hello Welcome to my URL shrinker: \n Send a json post request with the link in a 'longURl' field to get a shrunk URL\n Then just send a get request with the shortened URL as a parameter to redirect to the site",
+    `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>URL Shrinker</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body class="bg-gray-100 h-screen flex items-center justify-center">
+        <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+            <h1 class="text-2xl font-bold mb-4 text-gray-800">URL Shrinker</h1>
+            
+            <div class="flex flex-col gap-4">
+                <input type="url" id="longUrl" placeholder="Paste your long link here..." 
+                    class="border p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button onclick="shortenUrl()" 
+                    class="bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">
+                    Shorten
+                </button>
+            </div>
+
+            <div id="result" class="mt-6 hidden">
+                <p class="text-sm text-gray-600">Your shortened link:</p>
+                <div class="flex items-center gap-2 mt-2">
+                    <input type="text" id="shortenedCode" readonly 
+                        class="bg-gray-50 border p-2 rounded w-full text-blue-600 font-mono">
+                    <button onclick="copyToClipboard()" class="text-xs bg-gray-200 px-2 py-1 rounded">Copy</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            async function shortenUrl() {
+                const longUrl = document.getElementById('longUrl').value;
+                const resultDiv = document.getElementById('result');
+                const shortInput = document.getElementById('shortenedCode');
+
+                if (!longUrl) return alert("Please enter a URL");
+
+                try {
+                    const response = await fetch('/shorten', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ longUrl })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        resultDiv.classList.remove('hidden');
+                        // Constructs the full URL using the current browser location
+                        shortInput.value = window.location.origin + '/' + data.urlCode;
+                    } else {
+                        alert("Error: " + data);
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("Something went wrong");
+                }
+            }
+
+            function copyToClipboard() {
+                const copyText = document.getElementById("shortenedCode");
+                copyText.select();
+                document.execCommand("copy");
+                alert("Copied to clipboard!");
+            }
+        </script>
+    </body>
+    </html>
+  `,
   );
 });
 
