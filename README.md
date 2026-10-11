@@ -57,3 +57,6 @@ Deployments are fully automated using **GitHub Actions**. Upon any push to the `
 **GET** `/:code`
 * **Description:**
   Looks up the urlCode, increments the click counter, and issues a 302 Redirect to the original longUrl.
+
+<img width="1850" height="961" alt="Screenshot From 2026-10-11 19-30-19" src="https://github.com/user-attachments/assets/d506c32f-f3fa-4888-8fdf-c9b846b995b1" />
+
